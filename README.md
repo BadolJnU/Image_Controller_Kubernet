@@ -1,29 +1,26 @@
-# image-clone-controller
-Kubernetes controller which watches applications (Deployment and DaemonSet) and "caches" the images (public container images) by re-uploading to our own registry repository and reconfiguring the applications to use these copies.
+# Image-Controller-Kubernets
+A Kubernetes controller monitors applications (such as Deployments and DaemonSets) and "caches" public container images by uploading them to a private registry and updating the applications to use these new image copies.
 
 ## Project's Motivation
-- We’d like to be safe against the risk of public container images disappearing from the registry while we use them, breaking our deployments. 
-- Suppose, we have a Kubernetes cluster on which we can run applications. These applications will often use publicly available container images, like official images of popular programs, e.g. Jenkins, PostgreSQL, and so on. Since the images reside in repositories over which we have no control, it is possible that the owner of the repo deletes the image while our pods are configured to use it. In the case of a subsequent node rotation, the locally cached copies of the images would be deleted and Kubernetes would be unable to re-download them in order to re-provision the applications.
-- So, we want to have a controller which watches the applications and “caches” the images by re-uploading to our own registry repository and reconfiguring the applications to use these copies.
-
-## Demo
-- Watch the working demo: https://asciinema.org/a/hxq0A6vjNBJKq940t63cXUgkU
+- We want to protect against the risk of public container images being removed from their registries, which could disrupt our deployments. 
+- In my Kubernetes cluster, the applications frequently rely on publicly available container images, such as those for popular software like Jenkins or PostgreSQL. Since these images are hosted in external repositories beyond our control, there’s a chance that the repository owner could delete an image while our pods are still using it. If a node rotation occurs, the locally cached copies would be lost, and Kubernetes wouldn’t be able to re-download the images, preventing the applications from being re-provisioned.
+- So, to address this, we need a controller that monitors the applications and "caches" the images by uploading them to our own registry. It should then update the applications to use these copies instead.
 
 ## Use
 
-### Locally running the manager
-- clone this repo
+### Locally running the manager steps
+- clone this repo "https://github.com/BadolJnU/Image_Controller_Kubernet.git"
 - open the repo locally
 - run `make`
 - run `./bin/manager`
 - open another terminal and go to samples: `cd config/samples`
-- apply docker cred secret & sample deployment: 
+- apply docker credential secret & deployment: 
     - give <base64 encoded username:password of your docker registry> in the `auth:` field of the docker-cred-k8s-secret 
     - run `kubectl apply -f docker-cred-secret.yaml`
     - run `kubectl apply -f sample-deployment.yaml`
 - check in the sample deployment image, it will get cloned & pushed to your given docker registry and re-use in the deployment
 
-### InCluster manager running
+### InCluster manager running steps
 - `export IMG="<your_registry>/<controller_image_name>:<tag>"`
 - `make docker-build`
 - `make docker-push` (Note: for docker push you need to login in your dockerhub from the current terminal by `docker login`)
@@ -37,7 +34,7 @@ Kubernetes controller which watches applications (Deployment and DaemonSet) and 
 - check in the sample deployment image, it will get cloned & pushed to your given docker registry and re-use in the deployment
 - undeploy by: `make undeploy`
 
-## e2e test
+## e2e testing steps
 - Added e2e test for deployment controller, similarly will add for DaemonSet controller
 - For using Deployment controller test follow below steps:
   - run the controller (either locally or incluster running the manager)
@@ -56,14 +53,10 @@ Kubernetes controller which watches applications (Deployment and DaemonSet) and 
 
 ## Resources:
 - https://book.kubebuilder.io/quick-start.html
-- https://github.com/kubernetes-sigs/controller-runtime  
-- https://github.com/kubernetes-sigs/controller-runtime/tree/master/examples/builtins  
-- https://github.com/google/go-containerregistry/blob/master/pkg/v1/remote/README.md  
 - https://godoc.org/github.com/google/go-containerregistry/pkg/v1/remote  
 - https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 - https://github.com/google/go-containerregistry/blob/main/pkg/authn/k8schain/README.md
 - https://github.com/google/go-containerregistry/blob/main/cmd/crane/recipes.md
-- https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane_copy.md
 
 
 

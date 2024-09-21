@@ -1,4 +1,4 @@
-module github.com/shahincsejnu/image-clone-controller
+module github.com/BadolJnU/Image_Controller_Kubernet
 
 go 1.16
 

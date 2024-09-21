@@ -1,5 +1,5 @@
 /*
-Copyright @shahincsejnu 2022.
+Copyright @badolcsejnu 2024.
 */
 
 package main
@@ -19,7 +19,7 @@ import (
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/shahincsejnu/image-clone-controller/controllers"
+	"github.com/badolcsejnu/image-clone-controller/controllers"
 	//+kubebuilder:scaffold:imports
 )
 
